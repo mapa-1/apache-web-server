@@ -1,0 +1,45 @@
+#!/bin/bash
+
+# Cores para facilitar a leitura
+VERDE='\033[0;32m'
+NC='\033[0m' # Sem cor
+
+echo -e "${VERDE}--- Iniciando a instalação do Servidor Apache ---${NC}"
+
+# 1. Atualizar a lista de pacotes
+echo "Atualizando repositórios..."
+sudo apt update -y
+
+# 2. Instalar o Apache2
+echo "Instalando o Apache2..."
+sudo apt install apache2 -y
+
+# 3. Ajustar o Firewall (UFW) para permitir tráfego HTTP/HTTPS
+echo "Configurando o Firewall..."
+sudo ufw allow 'Apache Full'
+
+# 4. Verificar se o serviço está rodando
+echo "Verificando status do serviço..."
+sudo systemctl enable apache2
+sudo systemctl start apache2
+
+# 5. Criar uma página HTML básica de teste
+echo "Criando página de teste em /var/www/html/index.html..."
+sudo bash -c 'cat <<EOF > /var/www/html/index.html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Servidor Apache Ativo!</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; padding-top: 50px; }
+        h1 { color: #2e7d32; }
+    </style>
+</head>
+<body>
+    <h1>Sucesso! O servidor Apache foi configurado com sucesso.</h1>
+    <p>Script executado em: $(date)</p>
+</body>
+</html>
+EOF'
+
+echo -e "${VERDE}--- Instalação Concluída! ---${NC}"
